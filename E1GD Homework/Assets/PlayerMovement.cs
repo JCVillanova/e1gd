@@ -1,9 +1,11 @@
+using TMPro;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour 
 {
+    [SerializeField] TextMeshProUGUI text;
     [SerializeField] Animator anim;
     [SerializeField] Rigidbody2D rb;
     [SerializeField] float moveSpeed = 3f;
@@ -12,16 +14,19 @@ public class PlayerMovement : MonoBehaviour
     private bool isGrounded = true;
     private bool jumpedTwice = false;
     bool isFacingRight = true;
+    int coinNum = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        text.text = "Coins: 0";
     }
 
     // Update is called once per frame
     void Update()
     {
+        text.text = "Coins: " + coinNum;
+
         if(rb.linearVelocity.x == 0) anim.SetBool("isRunning", false);
 
         if((isFacingRight && rb.linearVelocity.x < 0) || (!isFacingRight && rb.linearVelocity.x > 0)) Flip();
@@ -69,6 +74,10 @@ public class PlayerMovement : MonoBehaviour
         {
             isGrounded = false;
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other) {
+        if(other.CompareTag("Coin")) ++coinNum;
     }
 
     private void Flip()
